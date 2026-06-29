@@ -67,14 +67,7 @@ const defaultTransactions = [
 
 export default function DashboardPage() {
   const router = useRouter()
-  const [activeSection, setActiveSection] = useState<Section>('overview')
-  const [currentBalance, setCurrentBalance] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('account_balance')
-      return saved ? parseFloat(saved) : 100000
-    }
-    return 100000
-  })
+  const [currentBalance, setCurrentBalance] = useState(100000)
   const [transactions, setTransactions] = useState(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('transactions_history')
@@ -85,7 +78,9 @@ export default function DashboardPage() {
   const [newTransfer, setNewTransfer] = useState(null)
   const [showBalance, setShowBalance] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
-
+useEffect(() => {
+  localStorage.removeItem('account_balance')
+}, [])
   const handleLogout = () => {
     setIsLoading(true)
     setTimeout(() => { router.push('/') }, 500)
