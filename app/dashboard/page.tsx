@@ -68,22 +68,23 @@ const defaultTransactions = [
 export default function DashboardPage() {
   const router = useRouter()
   const [activeSection, setActiveSection] = useState<Section>('overview')
-  const [currentBalance, setCurrentBalance] = useState(100000)
-  const [transactions, setTransactions] = useState(defaultTransactions)
+  const [currentBalance, setCurrentBalance] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('account_balance')
+      return saved ? parseFloat(saved) : 100000
+    }
+    return 100000
+  })
+  const [transactions, setTransactions] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('transactions_history')
+      return saved ? JSON.parse(saved) : defaultTransactions
+    }
+    return defaultTransactions
+  })
   const [newTransfer, setNewTransfer] = useState(null)
   const [showBalance, setShowBalance] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
-
-  useEffect(() => {
-    const savedBalance = localStorage.getItem('account_balance')
-    const savedTransactions = localStorage.getItem('transactions_history')
-    if (savedBalance) {
-      setCurrentBalance(parseFloat(savedBalance))
-    }
-    if (savedTransactions) {
-      setTransactions(JSON.parse(savedTransactions))
-    }
-  }, [])
 
   const handleLogout = () => {
     setIsLoading(true)
@@ -97,7 +98,7 @@ export default function DashboardPage() {
       return newBalance
     })
     setNewTransfer(transfer)
-    setTransactions(prev => {
+    setTransactions((prev: any) => {
       const updated = [transfer, ...prev]
       localStorage.setItem('transactions_history', JSON.stringify(updated))
       return updated
@@ -195,12 +196,12 @@ export default function DashboardPage() {
                 <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
                   <h3 className="text-lg font-bold text-slate-900 mb-4">Dernières transactions</h3>
                   <div className="space-y-3">
-                    {transactions.slice(0, 3).map((t) => (
+                    {transactions.slice(0, 3).map((t: any) => (
                       <div key={t.id} className="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
                         <div>
                           <p className="font-medium text-slate-900">{t.description}</p>
-                          {(t as any).recipient && <p className="text-xs text-slate-500 font-semibold">{(t as any).recipient}</p>}
-                          {(t as any).recipientIBAN && <p className="text-xs text-slate-400 font-mono">{(t as any).recipientIBAN}</p>}
+                          {t.recipient && <p className="text-xs text-slate-500 font-semibold">{t.recipient}</p>}
+                          {t.recipientIBAN && <p className="text-xs text-slate-400 font-mono">{t.recipientIBAN}</p>}
                           <p className="text-xs text-slate-400">{t.date.split('T')[0]}</p>
                         </div>
                         <div className="text-right">
