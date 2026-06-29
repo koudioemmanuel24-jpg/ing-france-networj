@@ -68,16 +68,20 @@ const defaultTransactions = [
 export default function DashboardPage() {
   const router = useRouter()
   const [activeSection, setActiveSection] = useState<Section>('overview')
-  const [currentBalance, setCurrentBalance] = useState(95000)
+  const [currentBalance, setCurrentBalance] = useState(100000)
   const [transactions, setTransactions] = useState(defaultTransactions)
   const [newTransfer, setNewTransfer] = useState(null)
   const [showBalance, setShowBalance] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    const saved = localStorage.getItem('transactions_history')
-    if (saved) {
-      setTransactions(JSON.parse(saved))
+    const savedBalance = localStorage.getItem('account_balance')
+    const savedTransactions = localStorage.getItem('transactions_history')
+    if (savedBalance) {
+      setCurrentBalance(parseFloat(savedBalance))
+    }
+    if (savedTransactions) {
+      setTransactions(JSON.parse(savedTransactions))
     }
   }, [])
 
@@ -87,7 +91,11 @@ export default function DashboardPage() {
   }
 
   const handleTransferSuccess = (transfer: any) => {
-    setCurrentBalance(prev => prev - transfer.amount)
+    setCurrentBalance(prev => {
+      const newBalance = prev - transfer.amount
+      localStorage.setItem('account_balance', newBalance.toString())
+      return newBalance
+    })
     setNewTransfer(transfer)
     setTransactions(prev => {
       const updated = [transfer, ...prev]
