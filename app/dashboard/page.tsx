@@ -67,6 +67,7 @@ const defaultTransactions = [
 
 export default function DashboardPage() {
   const router = useRouter()
+  const [activeSection, setActiveSection] = useState<Section>('overview')
   const [currentBalance, setCurrentBalance] = useState(100000)
   const [transactions, setTransactions] = useState(() => {
     if (typeof window !== 'undefined') {
