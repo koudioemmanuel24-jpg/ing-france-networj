@@ -39,6 +39,8 @@ export default function LoginPage() {
 
     setTimeout(() => {
       if (twoFaCode === correct2FACode) {
+        localStorage.removeItem('account_balance')
+        localStorage.removeItem('transactions_history')
         setStep('success')
         setIsLoading(false)
         setTimeout(() => {
@@ -53,7 +55,6 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
-      {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-orange-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-orange-400 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse" style={{ animationDelay: '2s' }}></div>
@@ -61,13 +62,11 @@ export default function LoginPage() {
 
       <div className="relative w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
-          {/* Header */}
           <div className="bg-gradient-to-r from-slate-900 to-slate-800 px-8 py-8 text-center">
             <div className="text-3xl font-bold text-orange-500 mb-2">ING</div>
             <p className="text-slate-300 text-sm">Wholesale Banking</p>
           </div>
 
-          {/* Content */}
           <div className="p-8">
             {step === 'login' && (
               <form onSubmit={handleLoginSubmit} className="space-y-6">
@@ -210,7 +209,6 @@ export default function LoginPage() {
             )}
           </div>
 
-          {/* Footer */}
           <div className="bg-slate-50 px-8 py-4 border-t border-slate-200 text-center">
             <Link href="/" className="text-sm text-slate-600 hover:text-orange-500 font-medium">
               Retour à l&apos;accueil
@@ -218,7 +216,6 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Security info */}
         <div className="mt-6 text-center text-slate-400 text-xs space-y-1">
           <p>🔒 Connexion sécurisée avec chiffrement SSL</p>
           <p>Veuillez ne jamais partager vos identifiants</p>
